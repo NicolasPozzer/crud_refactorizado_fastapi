@@ -7,9 +7,9 @@ import os
 load_dotenv()
 
 DB_USERNAME = os.getenv("DB_USERNAME")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_PASSWORD = os.getenv("DB_PASSW")
 DB_HOST = os.getenv("DB_HOST")
-DB_DATABASE = os.getenv("DB_DATABASE")
+DB_DATABASE = os.getenv("DB_NAME")
 
 URL_DATABASE = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_DATABASE}"
 
@@ -23,3 +23,9 @@ Base = declarative_base()
 
 
 # dependencia para obtener la session
+def get_db():
+    db = sessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
