@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-
 from controllers import ProfesionController
 from db.db import Base, engine
 

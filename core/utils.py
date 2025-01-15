@@ -2,7 +2,6 @@ from fastapi import FastAPI, Depends, HTTPException
 from typing import Type, TypeVar, List
 from db.db import get_db
 from sqlalchemy.orm import Session
-
 from fastapi import APIRouter
 
 # METODOS CRUD REFACTORIZADOS PARA SU USO
@@ -65,7 +64,12 @@ def crear_controlador_crud(
 
     @router.get(f"/{prefijo}/{{id}}", response_model=response_schema)
     def buscar_por_id(id: int, db: Session = Depends(get_db)):
-        item = db.query(model).filter(model.id == id).first()
-        if not item:
-            raise HTTPException(status_code=404, detail=f"{prefijo.capitalize()} no encontrado.")
-        return item
+        # Obtener todos los objetos del modelo
+        items = db.query(model).all()
+
+        # Buscar el objeto con el ID especificado
+        for item in items:
+            if item.id == id:
+                return item
+        # Si no se encuentra, lanzar una excepción
+        raise HTTPException(status_code=404, detail=f"{prefijo.capitalize()} no encontrado.")
